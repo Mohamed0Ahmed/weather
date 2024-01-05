@@ -63,6 +63,7 @@ async function display(url) {
    weather.innerHTML = `
    <div class="col-md-4">
    <div class="text-white d-flex flex-column align-items-center">
+            <h2 class="fw-bold">${weatherCity.location.country}</h2>
       <h2 class="fw-bold">${weatherCity.location.name}</h2>
       <h5> ${toDay}</h5>
    </div>
@@ -70,7 +71,7 @@ async function display(url) {
 <div class="col-md-4">
    <div class="text-white d-flex flex-column align-items-center">
       <div>
-         <span class="d-flex align-items-center  py-2">
+         <span class="d-flex align-items-center ">
             <img
                src="https:${weatherCity.current.condition.icon}"
                alt=""
