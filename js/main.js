@@ -10,22 +10,39 @@ let weather = document.getElementById("weather"),
       "Saturday",
    ];
 
-if (navigator.geolocation) {
-   navigator.geolocation.getCurrentPosition(function (position) {
-      var y = position.coords.latitude;
-      var x = position.coords.longitude;
-      display(`${y} ${x}`);
-   });
+function disabledGeo() {
+   display("Cairo");
 }
+
+if (navigator.geolocation) {
+   navigator.geolocation.getCurrentPosition(
+      function (position) {
+         var y = position.coords.latitude;
+         var x = position.coords.longitude;
+         display(`${y} ${x}`);
+      },
+      //*
+      disabledGeo
+   );
+}
+//*
+else {
+   display("Cairo");
+}
+
 search.addEventListener("input", async function () {
    if (/\w{1,}/.test(search.value)) {
       let weatherData = [];
-      let myHttp = await fetch(
-         `https://api.weatherapi.com/v1/search.json?key=6604b0953f764b359e0115848240501&q=${search.value}`
-      );
-      weatherData = JSON.parse(myHttp.response);
-      if (weatherData.length > 0) {
-         display(weatherData[0].url);
+      try {
+         let myHttp = await fetch(
+            `https://api.weatherapi.com/v1/search.json?key=6604b0953f764b359e0115848240501&q=${search.value}`
+         );
+         weatherData = await myHttp.json();
+         if (weatherData.length > 0) {
+            display(weatherData[0].url);
+         }
+      } catch (error) {
+         console.error("Error fetching weather data:", error);
       }
    }
 });
