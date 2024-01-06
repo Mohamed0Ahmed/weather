@@ -1,7 +1,5 @@
-"use strict";
-
-let search = document.getElementById("search"),
-   weather = document.getElementById("weather"),
+let weather = document.getElementById("weather"),
+   search = document.getElementById("search"),
    days = [
       "Sunday",
       "Monday",
@@ -10,51 +8,31 @@ let search = document.getElementById("search"),
       "Thursday",
       "Friday",
       "Saturday",
-   ],
-   months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
    ];
+
 if (navigator.geolocation) {
    navigator.geolocation.getCurrentPosition(function (position) {
-      var lati = position.coords.latitude;
-      var long = position.coords.longitude;
-      display(`${lati} ${long}`);
+      var y = position.coords.latitude;
+      var x = position.coords.longitude;
+      display(`${y} ${x}`);
    });
 }
-search.addEventListener("input", () => {
+search.addEventListener("input", async function () {
    if (/\w{1,}/.test(search.value)) {
-      let weatherSearch = [];
-      let myHttp = new XMLHttpRequest();
-      myHttp.open(
-         "GET",
+      let weatherData = [];
+      let myHttp = await fetch(
          `https://api.weatherapi.com/v1/search.json?key=6604b0953f764b359e0115848240501&q=${search.value}`
       );
-      myHttp.send();
-      myHttp.addEventListener("readystatechange", () => {
-         if (myHttp.readyState == 4) {
-            weatherSearch = JSON.parse(myHttp.response);
-            if (weatherSearch.length > 0) {
-               display(weatherSearch[0].url);
-            }
-         }
-      });
+      weatherData = JSON.parse(myHttp.response);
+      if (weatherData.length > 0) {
+         display(weatherData[0].url);
+      }
    }
 });
 
-async function display(url) {
+async function display(search) {
    let response = await fetch(
-      `https://api.weatherapi.com/v1/forecast.json?key=6604b0953f764b359e0115848240501&q=${url}&days=7`
+      `https://api.weatherapi.com/v1/forecast.json?key=6604b0953f764b359e0115848240501&q=${search}&days=7`
    );
    let weatherCity = await response.json();
    const apiToday = weatherCity.forecast.forecastday[0];
@@ -62,7 +40,7 @@ async function display(url) {
    const toDay = days[dateToDay.getDay()];
    weather.innerHTML = `
    <div class="col-md-4">
-   <div class="text-white d-flex flex-column align-items-center">
+   <div class="text-white text-center d-flex flex-column align-items-center">
             <h2 class="fw-bold">${weatherCity.location.country}</h2>
       <h2 class="fw-bold">${weatherCity.location.name}</h2>
       <h5> ${toDay}</h5>
@@ -131,5 +109,3 @@ async function display(url) {
       weather.appendChild(daysDiv);
    }
 }
-
-console.log(weather);
