@@ -110,19 +110,19 @@ async function display(search) {
 
       
       `;
-   for (let i = 0; i < weatherCity.forecast.forecastday.length; i++) {
+   for (let i = 0; i < weatherCity.forecast.forecastday.length - 1; i++) {
       const path = weatherCity.forecast.forecastday[i + 1];
       const daysDiv = document.createElement("div");
       const date = new Date(path.date);
       const day = days[date.getDay()];
       daysDiv.classList.add("col-lg-2", "text-white");
       daysDiv.innerHTML = `
-      <div class="contain">
-      <img src="https:${path.day.condition.icon}" style="width: 80px" alt="" />
-      <h5> ${day}</h5>
-      <p>+${path.day.maxtemp_c}º C</p>
-   </div>
-      `;
+         <div class="contain">
+            <img src="https:${path.day.condition.icon}" style="width: 80px" alt="" />
+            <h5>${day}</h5>
+            <p>+${path.day.maxtemp_c}º C</p>
+         </div>
+         `;
       weather.appendChild(daysDiv);
    }
 }
